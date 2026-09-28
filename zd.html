@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lupte libere — Campioni olimpici</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            background: #eeeeee;
+            color: #222222;
+        }
+        h1 {
+            padding: 24px 20px;
+            margin: 0 0 18px;
+            color: white;
+            text-align: center;
+            background: #1455a0;
+            border-bottom: 5px solid #c9002b;
+            border-radius: 10px;
+        }
+        .intro {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+        .category {
+            margin: 26px 0;
+        }
+        h2 {
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            color: #1455a0;
+            background: white;
+            border-left: 5px solid #c9002b;
+            border-radius: 6px;
+        }
+        .year {
+            color: #666;
+            font-size: .92rem;
+            margin: 10px 0 6px;
+        }
+        .medals {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 14px;
+        }
+        .medal {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 11px 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.08);
+        }
+        .champion {
+            cursor: pointer;
+            border-left: 4px solid #d6a400;
+        }
+        .champion:hover {
+            background: #fffbea;
+        }
+        .medal-icon { min-width: 25px; }
+        .name { font-weight: 700; }
+        .country { color: #555; }
+        .hint {
+            margin-left: auto;
+            color: #1455a0;
+            font-size: .82rem;
+        }
+        .legacy {
+            background: #f8f8f8;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #777;
+            margin-top: 10px;
+        }
+        .search-list {
+            background: #fff;
+            padding: 18px;
+            border-radius: 10px;
+            margin: 28px 0;
+        }
+        .search-list h2 { margin-top: 0; }
+        .names {
+            columns: 2;
+            column-gap: 35px;
+            line-height: 1.8;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            inset: 0;
+            background: rgba(0,0,0,.62);
+            padding: 25px;
+            overflow-y: auto;
+        }
+        .modal-content {
+            max-width: 650px;
+            margin: 5vh auto;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            border: 0;
+            background: transparent;
+            font-size: 30px;
+            cursor: pointer;
+            color: #555;
+        }
+        .profile-title {
+            color: #1455a0;
+            margin-top: 0;
+            padding-right: 30px;
+        }
+        .profile-box {
+            background: #f5f7fa;
+            padding: 14px;
+            border-radius: 8px;
+            line-height: 1.7;
+        }
+        footer {
+            margin-top: 30px;
+            padding: 18px;
+            color: white;
+            text-align: center;
+            background: #222222;
+            border-radius: 8px;
+        }
+        footer a { color: #ffb4c4; }
+        @media (max-width: 650px) {
+            body { padding: 10px; }
+            .names { columns: 1; }
+            .hint { display: none; }
+            .medal { align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <h1>LUPTE LIBERE</h1>
+
+    <div class="intro">
+        <p><strong>Lupta liberă</strong> este un sport bazat pe forță, tehnică și disciplină.</p>
+        <p>Mai jos sunt toate cele 6 categorii olimpice masculine folosite în perioada 2016–2024:
+        <strong>57 kg, 65 kg, 74 kg, 86 kg, 97 kg și 125 kg</strong>.</p>
+        <p>Apasă pe orice <strong>campion olimpic 🥇</strong> pentru informații suplimentare.</p>
+    </div>
+
+    <div id="categories"></div>
+
+    <section class="search-list">
+        <h2>Numele campionilor — pentru căutarea fotografiilor</h2>
+        <div class="names" id="championNames"></div>
+    </section>
+
+    <footer>
+        © 2026 de <a href="https://example.com/">Rominu Dmitrii</a>
+        — proiect despre lupte libere
+    </footer>
+
+    <div class="modal" id="modal" aria-hidden="true">
+        <div class="modal-content">
+            <button class="close" onclick="closeModal()" aria-label="Închide">&times;</button>
+            <h2 class="profile-title" id="modalTitle"></h2>
+            <div class="profile-box" id="modalBody"></div>
+        </div>
+    </div>
+
+<script>
+const data = {
+    "57 kg": [
+        {year:"Rio 2016", gold:["Vladimer Khinchegashvili","Georgia"], silver:["Rei Higuchi","Japonia"], bronze:[["Hassan Rahimi","Iran"],["Yowlys Bonne","Cuba"]], info:"Campion olimpic la Rio 2016. A câștigat finala împotriva lui Rei Higuchi (Japonia). Khinchegashvili este unul dintre campionii importanți ai categoriei 57 kg."},
+        {year:"Tokyo 2020", gold:["Zaur Uguev","ROC"], silver:["Ravi Kumar","India"], bronze:[["Nurislam Sanayev","Kazahstan"],["Thomas Gilman","SUA"]], info:"Campion olimpic la Tokyo 2020. A câștigat finala împotriva lui Ravi Kumar (India)."},
+        {year:"Paris 2024", gold:["Rei Higuchi","Japonia"], silver:["Spencer Lee","SUA"], bronze:[["Aman Sehrawat","India"],["Gulomjon Abdullaev","Uzbekistan"]], info:"Campion olimpic la Paris 2024. A câștigat finala împotriva lui Spencer Lee (SUA). Higuchi a revenit pe cea mai înaltă treaptă olimpică după argintul de la Rio 2016."}
+    ],
+    "65 kg": [
+        {year:"Rio 2016", gold:["Soslan Ramonov","Rusia"], silver:["Toghrul Asgarov","Azerbaidjan"], bronze:[["Frank Chamizo","Italia"],["Ikhtiyor Navruzov","Uzbekistan"]], info:"Campion olimpic la Rio 2016. A câștigat finala împotriva lui Toghrul Asgarov (Azerbaidjan)."},
+        {year:"Tokyo 2020", gold:["Takuto Otoguro","Japonia"], silver:["Haji Aliyev","Azerbaidjan"], bronze:[["Gadzhimurad Rashidov","ROC"],["Bajrang Punia","India"]], info:"Campion olimpic la Tokyo 2020. A câștigat finala împotriva lui Haji Aliyev (Azerbaidjan). UWW notează că Otoguro a devenit campion mondial în 2018 la vârsta de 19 ani și 10 luni."},
+        {year:"Paris 2024", gold:["Kotaro Kiyooka","Japonia"], silver:["Rahman Amouzad","Iran"], bronze:[["Islam Dudaev","Albania"],["Sebastian Rivera","Puerto Rico"]], info:"Campion olimpic la Paris 2024. A câștigat finala împotriva lui Rahman Amouzad (Iran)."}
+    ],
+    "74 kg": [
+        {year:"Londra 2012", gold:["Jordan Burroughs","SUA"], silver:["Sadegh Goudarzi","Iran"], bronze:[["Gábor Hatos","Ungaria"],["Denis Tsargush","Rusia"]], info:"Campion olimpic la Londra 2012. A câștigat finala împotriva lui Sadegh Goudarzi (Iran). Aceasta este categoria istorică de 74 kg inclusă în proiectul inițial."},
+        {year:"Rio 2016", gold:["Hassan Yazdani","Iran"], silver:["Aniuar Geduev","Rusia"], bronze:[["Jabrayil Hasanov","Azerbaidjan"],["Soner Demirtaş","Turcia"]], info:"Campion olimpic la Rio 2016. A câștigat finala împotriva lui Aniuar Geduev (Rusia)."},
+        {year:"Tokyo 2020", gold:["Zaurbek Sidakov","ROC"], silver:["Mahamedkhabib Kadzimahamedau","Belarus"], bronze:[["Kyle Dake","SUA"],["Bekzod Abdurakhmonov","Uzbekistan"]], info:"Campion olimpic la Tokyo 2020. A câștigat finala împotriva lui Mahamedkhabib Kadzimahamedau (Belarus)."},
+        {year:"Paris 2024", gold:["Razambek Jamalov","Uzbekistan"], silver:["Daichi Takatani","Japonia"], bronze:[["Kyle Dake","SUA"],["Chermen Valiev","Albania"]], info:"Campion olimpic la Paris 2024. A câștigat finala împotriva lui Daichi Takatani (Japonia)."}
+    ],
+    "86 kg": [
+        {year:"Rio 2016", gold:["Abdulrashid Sadulaev","Rusia"], silver:["Selim Yaşar","Turcia"], bronze:[["Sharif Sharifov","Azerbaidjan"],["J'den Cox","SUA"]], info:"Campion olimpic la Rio 2016. A câștigat finala împotriva lui Selim Yaşar (Turcia)."},
+        {year:"Tokyo 2020", gold:["David Taylor","SUA"], silver:["Hassan Yazdani","Iran"], bronze:[["Artur Naifonov","ROC"],["Myles Amine","San Marino"]], info:"Campion olimpic la Tokyo 2020. A câștigat finala împotriva lui Hassan Yazdani (Iran)."},
+        {year:"Paris 2024", gold:["Magomed Ramazanov","Bulgaria"], silver:["Hassan Yazdani","Iran"], bronze:[["Aaron Brooks","SUA"],["Dauren Kurugliev","Grecia"]], info:"Campion olimpic la Paris 2024. A câștigat finala împotriva lui Hassan Yazdani (Iran)."}
+    ],
+    "97 kg": [
+        {year:"Rio 2016", gold:["Kyle Snyder","SUA"], silver:["Khetag Gazyumov","Azerbaidjan"], bronze:[["Elizbar Odikadze","Georgia"],["Albert Saritov","România"],], info:"Campion olimpic la Rio 2016. A câștigat finala împotriva lui Khetag Gazyumov (Azerbaidjan)."},
+        {year:"Tokyo 2020", gold:["Abdulrashid Sadulaev","ROC"], silver:["Kyle Snyder","SUA"], bronze:[["Reineris Salas","Cuba"],["Abraham Conyedo","Italia"]], info:"Campion olimpic la Tokyo 2020. A câștigat finala împotriva lui Kyle Snyder (SUA). A fost al doilea titlu olimpic al lui Sadulaev, după Rio 2016."},
+        {year:"Paris 2024", gold:["Akhmed Tazhudinov","Bahrain"], silver:["Givi Matcharashvili","Georgia"], bronze:[["Magomedkhan Magomedov","Azerbaidjan"],["Amirali Azarpira","Iran"]], info:"Campion olimpic la Paris 2024. A câștigat finala împotriva lui Givi Matcharashvili (Georgia)."}
+    ],
+    "125 kg": [
+        {year:"Rio 2016", gold:["Taha Akgül","Turcia"], silver:["Komeil Ghasemi","Iran"], bronze:[["Ibrahim Saidov","Belarus"],["Geno Petriashvili","Georgia"]], info:"Campion olimpic la Rio 2016. A câștigat finala împotriva lui Komeil Ghasemi (Iran)."},
+        {year:"Tokyo 2020", gold:["Gable Steveson","SUA"], silver:["Geno Petriashvili","Georgia"], bronze:[["Amir Hossein Zare","Iran"],["Taha Akgül","Turcia"]], info:"Campion olimpic la Tokyo 2020. A câștigat finala împotriva lui Geno Petriashvili (Georgia)."},
+        {year:"Paris 2024", gold:["Geno Petriashvili","Georgia"], silver:["Amir Hossein Zare","Iran"], bronze:[["Taha Akgül","Turcia"],["Giorgi Meshvildishvili","Azerbaidjan"]], info:"Campion olimpic la Paris 2024. A câștigat finala împotriva lui Amir Hossein Zare (Iran)."}
+    ]
+};
+
+const medals = ["🥇","🥈","🥉","🥉"];
+
+function makeMedal(icon, athlete, country, clickable=false, info="") {
+    const li = document.createElement("li");
+    li.className = "medal" + (clickable ? " champion" : "");
+    li.innerHTML = `<span class="medal-icon">${icon}</span><span><span class="name">${athlete}</span> <span class="country">— ${country}</span></span>${clickable ? '<span class="hint">apasă pentru detalii</span>' : ''}`;
+    if (clickable) li.onclick = () => openModal(athlete, country, info);
+    return li;
+}
+
+const categories = document.getElementById("categories");
+const championNames = document.getElementById("championNames");
+
+for (const [weight, years] of Object.entries(data)) {
+    const section = document.createElement("section");
+    section.className = "category";
+    section.innerHTML = `<h2>Categoria ${weight}</h2>`;
+    for (const item of years) {
+        const y = document.createElement("div");
+        y.className = "year";
+        y.textContent = item.year;
+        section.appendChild(y);
+
+        const ul = document.createElement("ul");
+        ul.className = "medals";
+        ul.appendChild(makeMedal("🥇", item.gold[0], item.gold[1], true, item.info));
+        ul.appendChild(makeMedal("🥈", item.silver[0], item.silver[1]));
+        item.bronze.forEach(b => ul.appendChild(makeMedal("🥉", b[0], b[1])));
+        section.appendChild(ul);
+
+        const p = document.createElement("p");
+        p.className = "legacy";
+        p.innerHTML = `<strong>Campion:</strong> ${item.gold[0]} — ${item.gold[1]} (${item.year})`;
+        section.appendChild(p);
+
+        const n = document.createElement("div");
+        n.innerHTML = `• <strong>${item.gold[0]}</strong> — ${item.year}, ${weight}`;
+        championNames.appendChild(n);
+    }
+    categories.appendChild(section);
+}
+
+function openModal(name, country, info) {
+    document.getElementById("modalTitle").textContent = "🥇 " + name;
+    document.getElementById("modalBody").innerHTML =
+        `<p><strong>Țara:</strong> ${country}</p><p>${info}</p>
+         <p><strong>Pentru fotografie:</strong> caută pe internet numele exact
+         „${name} wrestling” sau „${name} lupte libere”.</p>`;
+    document.getElementById("modal").style.display = "block";
+    document.getElementById("modal").setAttribute("aria-hidden","false");
+}
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+    document.getElementById("modal").setAttribute("aria-hidden","true");
+}
+window.onclick = function(e) {
+    const modal = document.getElementById("modal");
+    if (e.target === modal) closeModal();
+};
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
+});
+</script>
+</body>
+</html>
